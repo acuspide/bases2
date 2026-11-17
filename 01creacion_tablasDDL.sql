@@ -1,25 +1,3 @@
--- =====================================================================================
--- TurismoUQ - Proyecto integrador BD II - Entrega 1
--- Script 01 - CREACION DE TABLAS (DDL)
--- Requisito : haber ejecutado antes el script 00 (usuario dueno del esquema).
--- Ejecucion : conectado con el usuario de trabajo (TURISMO), completo con F5.
---             Se ejecuta UNA vez sobre un esquema vacio: no borra tablas antes de
---             crearlas. Para volver a empezar, borrar el usuario y repetir desde el 00.
--- Origen    : generado con Oracle SQL Developer Data Modeler a partir del modelo
---             relacional (Relational_1.pdf) y revisado a mano.
---
--- Contenido
---   1. Las 14 tablas del modelo. Por cada tabla, en este orden:
---        CREATE TABLE        columnas, tipos, NOT NULL, valores por defecto e IDENTITY
---        COMMENT ON TABLE    que guarda la tabla (y COMMENT ON COLUMN si hace falta)
---        CHECK               reglas sobre los valores (estados, rangos, fechas)
---        PRIMARY KEY         llave primaria
---        UNIQUE              lo que no se puede repetir (correo, documento, numero...)
---   2. Las 16 llaves foraneas (FOREIGN KEY) que unen las tablas. Van al final para
---      que todas las tablas ya existan cuando se crean las referencias.
---   Las tablas AUDITORIA_TARIFA y RESERVA_HISTORICO se crean en los scripts 05 y 06.
--- =====================================================================================
-
 -- Generado por Oracle SQL Developer Data Modeler 24.3.1.351.0831
 --   en:        2026-09-23 22:18:24 COT
 --   sitio:      Oracle Database 21c
@@ -31,9 +9,6 @@
 
 -- predefined type, no DDL - XMLTYPE
 
--- =====================================================================================
--- 1. TABLAS, COMENTARIOS, CHECK, PRIMARY KEY Y UNIQUE
--- =====================================================================================
 CREATE TABLE alojamiento 
     ( 
      id_alojamiento         NUMBER GENERATED ALWAYS AS IDENTITY 
@@ -412,9 +387,6 @@ ALTER TABLE usuario_sistema
 ALTER TABLE usuario_sistema 
     ADD CONSTRAINT uq_usuario_correo UNIQUE ( correo ) ;
 
--- =====================================================================================
--- 2. LLAVES FORANEAS (relaciones entre tablas)
--- =====================================================================================
 ALTER TABLE alojamiento 
     ADD CONSTRAINT fk_alojamiento_municipio FOREIGN KEY 
     ( 

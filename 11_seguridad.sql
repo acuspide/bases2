@@ -174,13 +174,10 @@ SELECT grantee, table_name, column_name, privilege
 -- PARTE C - PRUEBAS POR USUARIO
 -- Crear en SQL Developer una conexion por usuario (mismo host y Service name).
 -- CURRENT_SCHEMA evita escribir "TURISMO." delante de cada objeto.
--- El dueno del esquema NO esta fijo: la primera vez SQL Developer pregunta el valor de
--- usuario_trabajo (TURISMO, PRUEBA o el usuario con que se cargo la base, en mayusculas).
--- Con && el valor se recuerda en la hoja y no se vuelve a preguntar.
 -------------------------------------------------------------------------------
 
 -- C.1 [U_RECEPCION]
-ALTER SESSION SET CURRENT_SCHEMA = &&usuario_trabajo;
+ALTER SESSION SET CURRENT_SCHEMA = TURISMO;
 
 SELECT * FROM reserva FETCH FIRST 5 ROWS ONLY;           -- Esperado: ORA-00942 (no ve la tabla)
 
@@ -195,7 +192,7 @@ SELECT pkg_operaciones.fn_cotizar(1, DATE '2026-11-10', DATE '2026-11-13') AS va
 DELETE FROM vw_clientes_contacto WHERE id_cliente = 1;   -- Esperado: ORA-01031 (solo tiene SELECT)
 
 -- C.2 [U_ADMIN_ALOJ] cambia una tarifa y la devuelve: la auditoria registra su usuario
-ALTER SESSION SET CURRENT_SCHEMA = &&usuario_trabajo;
+ALTER SESSION SET CURRENT_SCHEMA = TURISMO;
 
 UPDATE tarifa SET precio_noche = precio_noche + 1000 WHERE id_tarifa = 1;
 COMMIT;
@@ -206,7 +203,7 @@ DELETE FROM tarifa WHERE id_tarifa = 1;                  -- Esperado: ORA-01031 
 SELECT * FROM pago FETCH FIRST 1 ROWS ONLY;              -- Esperado: ORA-00942
 
 -- C.3 [U_GERENTE]
-ALTER SESSION SET CURRENT_SCHEMA = &&usuario_trabajo;
+ALTER SESSION SET CURRENT_SCHEMA = TURISMO;
 
 SELECT municipio, alojamiento, pct_ocupacion
   FROM mv_ocupacion_mensual
@@ -223,7 +220,7 @@ SELECT municipio, SUM(ingresos_hospedaje) AS ingresos
 UPDATE habitacion SET capacidad_maxima = 9 WHERE id_habitacion = 1;  -- Esperado: ORA-00942
 
 -- C.4 [U_AUDITOR] ve el cambio que hizo U_ADMIN_ALOJ en C.2
-ALTER SESSION SET CURRENT_SCHEMA = &&usuario_trabajo;
+ALTER SESSION SET CURRENT_SCHEMA = TURISMO;
 
 SELECT id_tarifa, operacion, precio_anterior, precio_nuevo, usuario, fecha_cambio
   FROM auditoria_tarifa
